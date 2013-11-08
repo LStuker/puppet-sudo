@@ -8,7 +8,7 @@ class sudo::params {
           $source = "${source_base}sudoers.wheezy"
         }
         default: {
-          $source = "${source_base}sudoers.deb"          
+          $source = "${source_base}sudoers.deb"
         }
       }
       $package = 'sudo'
@@ -31,11 +31,19 @@ class sudo::params {
       $config_file_group = 'root'
     }
     solaris: {
-      $package = 'SFWsudo'
-      $config_file = '/opt/sfw/etc/sudoers'
-      $config_dir = '/opt/sfw/etc/sudoers.d/'
-      $source = "${source_base}sudoers.solaris"
-      $config_file_group = 'root'
+      if $operatingsystemrelease != '5.11' {
+        $package = 'SFWsudo'
+        $config_file = '/opt/sfw/etc/sudoers'
+        $config_dir = '/opt/sfw/etc/sudoers.d/'
+        $source = "${source_base}sudoers.solaris"
+        $config_file_group = 'root'
+      }else {
+        $package = 'sudo'
+        $config_file = '/etc/sudoers'
+        $config_dir = '/etc/sudoers.d/'
+        $source = "${source_base}sudoers.solaris"
+        $config_file_group = 'root'
+      }
     }
     freebsd: {
       $package = 'security/sudo'
