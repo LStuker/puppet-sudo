@@ -3,12 +3,20 @@ class sudo::params {
 
   case $::osfamily {
     debian: {
-      case $::lsbdistcodename {
-        'wheezy': {
-          $source = "${source_base}sudoers.wheezy"
+      case $::operatingsystem {
+        'Ubuntu': {
+          $source = "${source_base}sudoers.ubuntu"
         }
         default: {
-          $source = "${source_base}sudoers.deb"
+
+          case $::lsbdistcodename {
+            'wheezy': {
+              $source = "${source_base}sudoers.wheezy"
+            }
+            default: {
+              $source = "${source_base}sudoers.deb"
+            }
+          }
         }
       }
       $package = 'sudo'
@@ -20,7 +28,11 @@ class sudo::params {
       $package = 'sudo'
       $config_file = '/etc/sudoers'
       $config_dir = '/etc/sudoers.d/'
-      $source = "${source_base}sudoers.rhel"
+      $source = $::operatingsystemrelease ? {
+        /^5/    => "${source_base}sudoers.rhel5",
+        /^6/    => "${source_base}sudoers.rhel6",
+        default => "${source_base}sudoers.rhel6",
+        }
       $config_file_group = 'root'
     }
     suse: {
@@ -31,20 +43,36 @@ class sudo::params {
       $config_file_group = 'root'
     }
     solaris: {
-      case $::kernelrelease {
-        '5.11': {
-          $package = 'pkg://solaris/security/sudo'
+      case $::operatingsystem {
+        'OmniOS': {
+          $package = 'sudo'
           $config_file = '/etc/sudoers'
           $config_dir = '/etc/sudoers.d/'
-          $source = "${source_base}sudoers.solaris"
+          $source = "${source_base}sudoers.omnios"
           $config_file_group = 'root'
         }
-        '5.10': {
-          $package = 'SFWsudo'
-          $config_file = '/opt/sfw/etc/sudoers'
-          $config_dir = '/opt/sfw/etc/sudoers.d/'
-          $source = "${source_base}sudoers.solaris"
-          $config_file_group = 'root'
+        default: {
+          case $::kernelrelease {
+            '5.11': {
+              $package = 'pkg://solaris/security/sudo'
+              $config_file = '/etc/sudoers'
+              $config_dir = '/etc/sudoers.d/'
+              $source = "${source_base}sudoers.solaris"
+              $config_file_group = 'root'
+            }
+            '5.10': {
+              $package = 'TCMsudo'
+              $package_source = 'http://www.sudo.ws/sudo/dist/packages/Solaris/10/TCMsudo-1.8.9p5-i386.pkg.gz'
+              $package_admin_file = '/var/sadm/install/admin/puppet'
+              $config_file = '/etc/sudoers'
+              $config_dir = '/etc/sudoers.d/'
+              $source = "${source_base}sudoers.solaris"
+              $config_file_group = 'root'
+            }
+            default: {
+              fail("Unsupported platform: ${::osfamily}/${::operatingsystem}/${::kernelrelease}")
+            }
+          }
         }
       }
     }
@@ -54,6 +82,14 @@ class sudo::params {
       $config_dir = '/usr/local/etc/sudoers.d/'
       $source = "${source_base}sudoers.freebsd"
       $config_file_group = 'wheel'
+    }
+    aix: {
+      $package = 'sudo'
+      $package_source = 'http://www.sudo.ws/sudo/dist/packages/AIX/5.3/sudo-1.8.9-6.aix53.lam.rpm'
+      $config_file = '/etc/sudoers'
+      $config_dir = '/etc/sudoers.d/'
+      $source = "${source_base}sudoers.aix"
+      $config_file_group = 'system'
     }
     default: {
       case $::operatingsystem {
@@ -69,6 +105,17 @@ class sudo::params {
           $config_file = '/etc/sudoers'
           $config_dir = '/etc/sudoers.d/'
           $source = "${source_base}sudoers.archlinux"
+          $config_file_group = 'root'
+        }
+        amazon: {
+          $package = 'sudo'
+          $config_file = '/etc/sudoers'
+          $config_dir = '/etc/sudoers.d/'
+          $source = $::operatingsystemrelease ? {
+            /^5/    => "${source_base}sudoers.rhel5",
+            /^6/    => "${source_base}sudoers.rhel6",
+            default => "${source_base}sudoers.rhel6",
+          }
           $config_file_group = 'root'
         }
         default: {
