@@ -48,9 +48,6 @@ class sudo::package::solaris (
     '5.10': {
       package { $package:
         ensure          => $package_ensure,
-        source          => $package_source,
-        adminfile       => $package_admin_file,
-        install_options => ['-G', ],
       }
     }
     default: {
