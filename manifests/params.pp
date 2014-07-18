@@ -66,6 +66,7 @@ class sudo::params {
               $config_dir = '/etc/opt/csw/sudoers.d/'
               $source = "${source_base}sudoers.solaris.csw"
               $config_file_group = 'root'
+			  $package_provider = 'pkgutil'
             }
             default: {
               fail("Unsupported platform: ${::osfamily}/${::operatingsystem}/${::kernelrelease}")

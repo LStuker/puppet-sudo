@@ -34,6 +34,7 @@ class sudo::package(
   $package_ensure = present,
   $package_source = '',
   $package_admin_file = '',
+  $package_provider,
   ) {
 
   case $::osfamily {
@@ -49,6 +50,7 @@ class sudo::package(
         package            => $package,
         package_source     => $package_source,
         package_ensure     => $package_ensure,
+		package_provider   => $package_provider,
       }
     }
     default: {

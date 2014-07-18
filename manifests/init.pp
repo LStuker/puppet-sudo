@@ -78,6 +78,7 @@ class sudo(
   $package_ensure      = present,
   $package_source      = $sudo::params::package_source,
   $package_admin_file  = $sudo::params::package_admin_file,
+  $package_provider    = $sudo::params::package_provider,
   $purge               = true,
   $config_file         = $sudo::params::config_file,
   $config_file_replace = true,
@@ -85,7 +86,7 @@ class sudo(
   $source              = $sudo::params::source
 ) inherits sudo::params {
 
-
+  Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/", "/opt/csw/bin", "/opt/csw/sbin" ] }
   validate_bool($enable)
   case $enable {
     true: {
@@ -103,6 +104,7 @@ class sudo(
     package_ensure     => $package_ensure,
     package_source     => $package_source,
     package_admin_file => $package_admin_file,
+	package_provider   => $package_provider,
   }
 
   file { $config_file:

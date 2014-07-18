@@ -37,6 +37,7 @@ class sudo::package::solaris (
   $package_source     = '',
   $package_ensure     = 'present',
   $package_admin_file = '',
+  $package_provider,
   ) {
 
   case $::kernelrelease {
@@ -47,7 +48,8 @@ class sudo::package::solaris (
     }
     '5.10': {
       package { $package:
-        ensure          => $package_ensure,
+        ensure   => $package_ensure,
+		provider => $package_provider,
       }
     }
     default: {
