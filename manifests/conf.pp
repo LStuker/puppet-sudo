@@ -46,6 +46,7 @@ define sudo::conf(
   ) {
 
   include sudo
+  Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/", "/opt/csw/bin", "/opt/csw/sbin" ] }
 
   # Hack to allow the user to set the config_dir from the
   # sudo::config parameter, but default to $sudo::params::config_dir

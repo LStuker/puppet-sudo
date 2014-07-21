@@ -87,6 +87,7 @@ class sudo(
 ) inherits sudo::params {
 
   Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/", "/opt/csw/bin", "/opt/csw/sbin" ] }
+
   validate_bool($enable)
   case $enable {
     true: {
